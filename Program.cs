@@ -8,10 +8,19 @@ builder.Logging.AddAzureWebAppDiagnostics();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var connectionString = builder.Configuration.GetConnectionString("MyDbConnection");
+
 builder.Services.AddDbContext<MyDatabaseContext>(options =>
                     options.UseSqlite("Data Source=localdatabase.db"));
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<MyDatabaseContext>();
+    context.Database.EnsureCreated(); 
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

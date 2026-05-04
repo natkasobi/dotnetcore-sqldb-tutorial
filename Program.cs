@@ -1,5 +1,7 @@
 ﻿using DotNetCoreSqlDb.Models;
 using Microsoft.EntityFrameworkCore;
+using Azure.Identity;
+using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,11 @@ builder.Logging.AddAzureWebAppDiagnostics();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSingleton(x =>
+    new BlobServiceClient(
+        new Uri("https://statican.blob.core.windows.net"),
+        new DefaultAzureCredential()));
 
 var connectionString = builder.Configuration.GetConnectionString("MyDbConnection");
 

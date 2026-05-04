@@ -54,6 +54,16 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7E5ACE491DEC4DBDA87ACD6AF48783D1 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_243078172C5B41C5AF616D9D1A10FB0C }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8F5EEB3236DB447884190FAE750B8248 }}
+      - name: Upload Static Assets to Blob Storage
+        uses: azure/CLI@v1
+        with:
+            inlineScript: |
+                  az storage blob upload-batch \
+                    --account-name statican \
+                    --destination 'static' \
+                    --source 'wwwroot' \
+                    --overwrite true \
+                    --auth-mode key
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
